@@ -1,0 +1,10 @@
+[project]
+name = "roman-numerals"
+version = "0.1.0"
+description = "Validating parser and pretty printer for roman numerals"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
