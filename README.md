@@ -30,6 +30,18 @@ state, no I/O. `is_valid` never raises; `from_roman` and `to_roman` raise
 `ValueError` (or `TypeError` for bad input types) instead of returning a
 sentinel, so callers can't accidentally ignore a bad conversion.
 
+### Command line
+
+```
+romannum 1994      # MCMXCIV
+romannum MCMXCIV   # 1994
+```
+
+The direction is inferred from the argument: all digits means
+arabic-to-roman, anything else is parsed as a roman numeral. A bad
+conversion prints an error to stderr and exits with status 1 instead of
+raising.
+
 ## Design
 
 - `to_roman` builds the numeral greedily from a fixed table of
