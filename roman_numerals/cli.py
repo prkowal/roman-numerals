@@ -12,10 +12,10 @@ import sys
 from .core import from_roman, to_roman
 
 
-def _convert(value: str) -> str:
+def _convert(value: str, *, ignore_case: bool = False) -> str:
     if value.isdigit():
         return to_roman(int(value))
-    return str(from_roman(value))
+    return str(from_roman(value, normalize_case=ignore_case))
 
 
 def main(argv=None) -> int:
@@ -27,10 +27,16 @@ def main(argv=None) -> int:
         "value",
         help="an integer 1-3999, or a canonical roman numeral to convert",
     )
+    parser.add_argument(
+        "-i",
+        "--ignore-case",
+        action="store_true",
+        help="accept lowercase or mixed-case roman numeral input",
+    )
     args = parser.parse_args(argv)
 
     try:
-        result = _convert(args.value)
+        result = _convert(args.value, ignore_case=args.ignore_case)
     except (TypeError, ValueError) as exc:
         print(f"romannum: {exc}", file=sys.stderr)
         return 1

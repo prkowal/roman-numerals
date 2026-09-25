@@ -38,6 +38,18 @@ class CliTests(unittest.TestCase):
         self.assertEqual(out, "")
         self.assertIn("IIII", err)
 
+    def test_lowercase_numeral_fails_cleanly_by_default(self):
+        status, out, err = run(["mcmxciv"])
+        self.assertEqual(status, 1)
+        self.assertEqual(out, "")
+        self.assertIn("mcmxciv", err)
+
+    def test_lowercase_numeral_accepted_with_ignore_case_flag(self):
+        status, out, err = run(["--ignore-case", "mcmxciv"])
+        self.assertEqual(status, 0)
+        self.assertEqual(out, "1994")
+        self.assertEqual(err, "")
+
     def test_missing_argument_is_a_usage_error(self):
         with self.assertRaises(SystemExit) as ctx:
             run([])

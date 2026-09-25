@@ -59,6 +59,18 @@ class FromRomanTests(unittest.TestCase):
         for number in range(1, 4000):
             self.assertEqual(from_roman(to_roman(number)), number)
 
+    def test_lowercase_rejected_by_default(self):
+        with self.assertRaises(ValueError):
+            from_roman("mcmxciv")
+
+    def test_lowercase_accepted_when_opted_in(self):
+        self.assertEqual(from_roman("mcmxciv", normalize_case=True), 1994)
+        self.assertEqual(from_roman("McmXciv", normalize_case=True), 1994)
+
+    def test_opt_in_still_rejects_malformed_numerals(self):
+        with self.assertRaises(ValueError):
+            from_roman("iiii", normalize_case=True)
+
 
 class IsValidTests(unittest.TestCase):
     def test_accepts_canonical_forms(self):
@@ -68,6 +80,13 @@ class IsValidTests(unittest.TestCase):
         self.assertFalse(is_valid("IIII"))
         self.assertFalse(is_valid(""))
         self.assertFalse(is_valid(None))
+
+    def test_lowercase_rejected_by_default(self):
+        self.assertFalse(is_valid("mcmxciv"))
+
+    def test_lowercase_accepted_when_opted_in(self):
+        self.assertTrue(is_valid("mcmxciv", normalize_case=True))
+        self.assertFalse(is_valid("iiii", normalize_case=True))
 
 
 if __name__ == "__main__":

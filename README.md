@@ -23,6 +23,9 @@ from_roman("IIII")      # raises ValueError
 
 to_roman(0)              # raises ValueError, no roman numeral for zero
 to_roman(4000)            # raises ValueError, out of representable range
+
+from_roman("mcmxciv")                        # raises ValueError, lowercase isn't canonical
+from_roman("mcmxciv", normalize_case=True)   # 1994, opted into case normalization
 ```
 
 All three public functions are pure: same input, same output, no shared
@@ -35,12 +38,15 @@ sentinel, so callers can't accidentally ignore a bad conversion.
 ```
 romannum 1994      # MCMXCIV
 romannum MCMXCIV   # 1994
+romannum mcmxciv                 # error: lowercase isn't canonical
+romannum --ignore-case mcmxciv   # 1994
 ```
 
 The direction is inferred from the argument: all digits means
 arabic-to-roman, anything else is parsed as a roman numeral. A bad
 conversion prints an error to stderr and exits with status 1 instead of
-raising.
+raising. Lowercase input is rejected unless `--ignore-case` (`-i`) is
+given, matching `from_roman`'s `normalize_case` opt-in.
 
 ## Design
 

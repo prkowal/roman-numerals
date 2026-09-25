@@ -39,25 +39,38 @@ MIN_VALUE = 1
 MAX_VALUE = 3999
 
 
-def is_valid(text: str) -> bool:
+def is_valid(text: str, *, normalize_case: bool = False) -> bool:
     """Return True if `text` is a canonical roman numeral, False otherwise.
 
     Never raises. Anything that isn't a non-empty string is simply not
     valid, including the empty string itself (there is no roman numeral
     for zero).
+
+    Roman numerals are canonically uppercase, so lowercase input is
+    rejected by default. Pass `normalize_case=True` to accept lowercase
+    or mixed-case input as if it had been uppercased first; this is an
+    explicit opt-in rather than the default because silently accepting
+    "iv" alongside "IV" would make is_valid a weaker check than the
+    grammar it's meant to enforce.
     """
     if not isinstance(text, str) or not text:
         return False
+    if normalize_case:
+        text = text.upper()
     return _NUMERAL_PATTERN.match(text) is not None
 
 
-def from_roman(text: str) -> int:
+def from_roman(text: str, *, normalize_case: bool = False) -> int:
     """Convert a canonical roman numeral to its integer value.
 
-    Raises ValueError if `text` is not a valid numeral.
+    Raises ValueError if `text` is not a valid numeral. Pass
+    `normalize_case=True` to accept lowercase or mixed-case input (see
+    `is_valid` for why this isn't the default).
     """
-    if not is_valid(text):
+    if not is_valid(text, normalize_case=normalize_case):
         raise ValueError(f"not a valid roman numeral: {text!r}")
+    if normalize_case:
+        text = text.upper()
 
     total = 0
     position = 0
